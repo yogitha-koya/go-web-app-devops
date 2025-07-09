@@ -1,10 +1,15 @@
 pipeline {
-  agent any
+  agent {
+    docker {
+      image 'golang:1.22-alpine'     // Use official Go image
+      args '-v /var/run/docker.sock:/var/run/docker.sock'  // To enable Docker CLI inside container
+    }
+  }
 
   environment {
     DOCKER_IMAGE = "yogithak/go-web-app:${BUILD_NUMBER}"
-    DOCKER_CREDENTIALS_ID = 'docker-cred'    // DockerHub credentials ID in Jenkins
-    GITHUB_CREDENTIALS_ID = 'github'         // GitHub token secret text in Jenkins
+    DOCKER_CREDENTIALS_ID = 'docker-cred'    // Jenkins credentials ID for DockerHub
+    GITHUB_CREDENTIALS_ID = 'github'         // Jenkins secret text (GitHub PAT)
     GIT_REPO_NAME = "go-web-app-devops"
     GIT_USER_NAME = "yogitha-koya"
   }
@@ -13,6 +18,14 @@ pipeline {
     stage('Checkout') {
       steps {
         checkout scm
+      }
+    }
+
+    stage('Install Docker CLI') {
+      steps {
+        sh '''
+          apk add --no-cache docker-cli git bash
+        '''
       }
     }
 
