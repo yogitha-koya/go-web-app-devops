@@ -33,7 +33,7 @@ pipeline {
       steps {
         sh '''
           go version
-          go build -o go-web-app
+          go build -buildvcs=false -o go-web-app
           go test ./...
         '''
       }
