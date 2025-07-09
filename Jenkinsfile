@@ -58,7 +58,8 @@ pipeline {
 
             echo "Current directory: \$(pwd)"
             ls -al
-            git status
+            git config --global --add safe.directory /var/lib/jenkins/workspace/go-web-app-pipeline
+            
             sed -i "s/tag: .*/tag: \\"${BUILD_NUMBER}\\"/" helm/go-web-app-chart/values.yaml
             git config user.email "yogitha.koya@example.com"
             git config user.name "Yogitha Koya"
