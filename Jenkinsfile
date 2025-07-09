@@ -55,9 +55,11 @@ pipeline {
       steps {
         withCredentials([string(credentialsId: "${GITHUB_CREDENTIALS_ID}", variable: 'GITHUB_TOKEN')]) {
           sh '''
+
+            sed -i "s/tag: .*/tag: \\"${BUILD_NUMBER}\\"/" helm/go-web-app-chart/values.yaml
             git config user.email "yogitha.koya@example.com"
             git config user.name "Yogitha Koya"
-            sed -i "s/tag: .*/tag: \\"${BUILD_NUMBER}\\"/" helm/go-web-app-chart/values.yaml
+            
             git add helm/go-web-app-chart/values.yaml
             git commit -m "ci: update image tag to ${BUILD_NUMBER}" || echo "No changes to commit"
             git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME}.git HEAD:main
