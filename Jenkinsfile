@@ -56,7 +56,9 @@ pipeline {
         withCredentials([string(credentialsId: "${GITHUB_CREDENTIALS_ID}", variable: 'GITHUB_TOKEN')]) {
           sh '''
 
-            pwd
+            echo "Current directory: \$(pwd)"
+            ls -al
+            git status
             sed -i "s/tag: .*/tag: \\"${BUILD_NUMBER}\\"/" helm/go-web-app-chart/values.yaml
             git config user.email "yogitha.koya@example.com"
             git config user.name "Yogitha Koya"
