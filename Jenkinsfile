@@ -2,7 +2,7 @@ pipeline {
   agent {
     docker {
       image 'golang:1.22-alpine'     // Use official Go image
-      args '-v /var/run/docker.sock:/var/run/docker.sock'  // To enable Docker CLI inside container
+      args '-u root -v /var/run/docker.sock:/var/run/docker.sock'  // To enable Docker CLI inside container
     }
   }
 
