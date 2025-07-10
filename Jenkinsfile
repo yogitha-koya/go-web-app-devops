@@ -51,7 +51,7 @@ pipeline {
             docker build -t ${DOCKER_IMAGE} .
 
             echo "Scanning image with Docker Scout..."
-            docker scout quickview ${DOCKER_IMAGE} || echo "Scan completed with warnings"
+            docker-scout quickview ${DOCKER_IMAGE} || echo "Scan completed with warnings"
           '''
         }
       }
