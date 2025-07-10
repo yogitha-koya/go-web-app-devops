@@ -39,10 +39,22 @@ pipeline {
       }
     }
 
-    stage('Build and Push Docker Image') {
+    stage('Scan Docker Image with Docker Scout') {
       steps {
         script {
-          sh 'docker build -t ${DOCKER_IMAGE} .'
+          sh '''
+            echo "Building Docker image for scan..."
+            docker build -t ${DOCKER_IMAGE} .
+
+            echo "Scanning image with Docker Scout..."
+            docker scout quickview ${DOCKER_IMAGE} || echo "Scan completed with warnings"
+          '''
+        }
+      }
+    }
+    stage('Push Docker Image to Docker Hub') {
+      steps {
+        script {
           def image = docker.image("${DOCKER_IMAGE}")
           docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_CREDENTIALS_ID}") {
             image.push()
