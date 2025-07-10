@@ -43,6 +43,10 @@ pipeline {
       steps {
         script {
           sh '''
+            echo "Installing Docker Scout CLI..."
+            apk add --no-cache curl
+            curl -sSfL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh | sh -s -- -b /usr/local/bin
+
             echo "Building Docker image for scan..."
             docker build -t ${DOCKER_IMAGE} .
 
