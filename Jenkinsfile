@@ -82,8 +82,8 @@ pipeline {
             git config --global --add safe.directory /var/lib/jenkins/workspace/go-web-app-pipeline
             
             sed -i "s/tag: .*/tag: \\"${BUILD_NUMBER}\\"/" helm/go-web-app-chart/values.yaml
-            git config user.email "yogitha.koya@example.com"
-            git config user.name "Yogitha Koya"
+            git config user.email "yogithak@gmail.com"
+            git config user.name "Yogitha K"
             
             git add helm/go-web-app-chart/values.yaml
             git commit -m "ci: update image tag to ${BUILD_NUMBER}" || echo "No changes to commit"
