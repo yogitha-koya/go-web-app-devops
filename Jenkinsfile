@@ -41,21 +41,26 @@ pipeline {
 
     stage('Scan Docker Image with Docker Scout') {
       steps {
-        script {
-          sh '''
-            echo "Installing Docker Scout CLI..."
-            apk add --no-cache curl
-            curl -sSfL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh | sh -s -- -b /usr/local/bin
+        withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS_ID}", usernameVariable: 'DOCKER_HUB_USERNAME', passwordVariable: 'DOCKER_HUB_PASSWORD')]) {
+          script {
+            sh '''
+              echo "Installing Docker Scout CLI..."
+              apk add --no-cache curl
+              curl -sSfL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh | sh -s -- -b /usr/local/bin
+              
+              echo 'Docker login...'
+              docker login -u "$DOCKER_HUB_USERNAME" -p "$DOCKER_HUB_PASSWORD"
+              
+              echo "Building Docker image for scan..."
+              docker build -t ${DOCKER_IMAGE} .
 
-            echo "Building Docker image for scan..."
-            docker build -t ${DOCKER_IMAGE} .
-
-            echo "Scanning image with Docker Scout..."
-            docker-scout quickview ${DOCKER_IMAGE} || echo "Scan completed with warnings"
-          '''
+              echo "Scanning image with Docker Scout..."
+              docker-scout quickview ${DOCKER_IMAGE} || echo "Scan completed with warnings"
+            '''
+          }
         }
       }
-    }
+    }  
     stage('Push Docker Image to Docker Hub') {
       steps {
         script {
